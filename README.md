@@ -49,7 +49,7 @@ Stable Diffusion XL 根据 prompt 生成图像
 
 | 生成前草图 | 生成后效果 |
 | --- | --- |
-| ![生成前草图](assets/examples/input-sketch.png) | ![生成后效果](assets/examples/generated-owl.jpg) |
+| <img src="assets/examples/input-sketch.png" alt="生成前草图" width="360"> | <img src="assets/examples/generated-owl.jpg" alt="生成后效果" width="360"> |
 
 ## 目录说明
 
@@ -64,18 +64,9 @@ Stable Diffusion XL 根据 prompt 生成图像
 
 本地目录中还保留了一些早期实验脚本和模型目录，例如 `operate/`、`main_t2i_sketch.py`、`switchstyle.py`、`useLora.py`、`lora/`、`sdxl-vae-fp16-fix/`、`t2i-adapter-sketch-sdxl-1.0/` 等。这些文件用于本地追溯和运行备份，默认已被 `.gitignore` 忽略，不会上传到 GitHub。
 
-## 大模型文件
+## 模型文件下载
 
-为了避免 GitHub 仓库过大，以下模型目录不建议提交到 GitHub，需要在本地单独下载或复制到项目根目录：
-
-```text
-stable-diffusion-xl-base-1.0/
-Annotators/
-t2iadapter-aux-models/
-t2i-adapter-depth-midas-sdxl-1.0/
-```
-
-当前代码主要依赖：
+为了避免 GitHub 仓库过大，模型权重不会提交到仓库。运行前需要把下面的目录放到项目根目录，目录名需要和代码中的相对路径保持一致：
 
 ```text
 stable-diffusion-xl-base-1.0/
@@ -85,7 +76,48 @@ sdxl-vae-fp16-fix/
 t2i-adapter-sketch-sdxl-1.0/
 ```
 
-其中 `stable-diffusion-xl-base-1.0/` 是 SDXL 基座模型，体积很大，建议从 Hugging Face 或 ModelScope 重新下载。`lora/`、`sdxl-vae-fp16-fix/`、`t2i-adapter-sketch-sdxl-1.0/` 可以放在本地运行，但默认已被 `.gitignore` 忽略，避免误提交大文件。
+推荐使用 Hugging Face CLI 下载公开模型：
+
+```bash
+pip install -U huggingface_hub
+
+huggingface-cli download stabilityai/stable-diffusion-xl-base-1.0 \
+  --local-dir stable-diffusion-xl-base-1.0
+
+huggingface-cli download TencentARC/t2i-adapter-sketch-sdxl-1.0 \
+  --local-dir t2i-adapter-sketch-sdxl-1.0
+
+huggingface-cli download madebyollin/sdxl-vae-fp16-fix \
+  --local-dir sdxl-vae-fp16-fix
+
+huggingface-cli download lllyasviel/Annotators \
+  --local-dir Annotators
+```
+
+LoRA 风格权重需要单独准备。当前最终脚本 `img2img.py` 默认加载：
+
+```text
+lora/Web_Cartoon.safetensors
+```
+
+如果你有原服务器访问权限，可以从原项目复制：
+
+```bash
+mkdir -p lora
+scp hdu@117:/data/cyy/aigc/lora/Web_Cartoon.safetensors lora/
+```
+
+如果使用自己的 LoRA，请把文件放到 `lora/` 目录，并在 `img2img.py` 中修改 `weight_name`。所有模型目录和 LoRA 权重都已被 `.gitignore` 忽略，不会被提交到 GitHub。
+
+可选的深度控制脚本 `operate/main_t2i_depth.py` 还会用到下面两个目录，但它们不是当前最终 Flask 服务的必需项：
+
+```bash
+huggingface-cli download TencentARC/t2i-adapter-depth-midas-sdxl-1.0 \
+  --local-dir t2i-adapter-depth-midas-sdxl-1.0
+
+huggingface-cli download TencentARC/t2iadapter-aux-models \
+  --local-dir t2iadapter-aux-models
+```
 
 ## 环境安装
 
