@@ -1,0 +1,50 @@
+# Ignore everything by default. This repository is intended to publish only the
+# final Flask demo code, README, dependency list, and two example images.
+*
+
+# Keep repository metadata and documentation.
+!.gitignore
+!README.md
+!requirements.txt
+
+# Final backend entrypoint and generation pipeline.
+!apistart.py
+!img2img.py
+
+# Keep only the README example pair.
+!assets/
+assets/*
+!assets/examples/
+assets/examples/*
+!assets/examples/input-sketch.png
+!assets/examples/generated-owl.jpg
+
+# Explicit reminders for large/local-only assets.
+stable-diffusion-xl-base-1.0/
+Annotators/
+t2iadapter-aux-models/
+t2i-adapter-depth-midas-sdxl-1.0/
+lora/
+sdxl-vae-fp16-fix/
+t2i-adapter-sketch-sdxl-1.0/
+
+# Local caches, environments, logs, and generated outputs.
+__pycache__/
+*.py[cod]
+.idea/
+.DS_Store
+.env
+.venv/
+venv/
+outputs/
+runs/
+logs/
+wandb/
+
+# Prevent accidental commits of model/checkpoint files.
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.onnx
+*.safetensors
